@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="mdui-theme-dark">
+
+<head>
+    <meta charset="utf-8">
+    <title>OpenFrp TOML 配置文件转换 (ini) 工具</title>
+    <script>
+        function tomlconvert() {
+            var toml = document.getElementById('toml').value.split('\n');
+
+            var ini = ['[common]'];
+            var context = ini;
+            var proxies = [];
+
+            for (line of toml) {
+                if (line.startsWith('[')) {
+                    if (line.startsWith('[[proxies]]')) {
+                        context = [];
+                        proxies.push(context);
+                    } else {
+                        context = ini;
+                    }
+                } else {
+                    var split = line.split(' = ');
+                    if (split.length === 2) {
+                        if (context === ini && split[0] === 'user') {
+                            context.push('user = ' + split[1].replace(/"/g, ''));
+                        } else if (context !== ini && split[0] === 'name') {
+                            context.push('\n' + '[' + split[1].replace(/"/g, '') + ']');
+                        } else {
+                            if (split[0] !== 'method' && split[0] !== 'enable' && split[0] !== 'disableCustomTLSFirstByte') {
+                                context.push(split[0].replace(/(.)([A-Z])/g, '$1_$2').toLowerCase() + ' = ' + split[1].replace(/"/g, ''));
+                            }
+                        }
+                    } else {
+
+                    }
+                }
+            }
+
+            // Add a new line after each proxy for better readability
+            for (let i = 0; i < proxies.length; i++) {
+                proxies[i].push('');
+            }
+
+            document.getElementById('ini').value = ini.concat(proxies.flat()).join('\n');
+        }</script>
+</head>
+<link rel="stylesheet" href="assets/mdui.css">
+<script src="assets/mdui.js">
+</script>
+
+<body>
+<mdui-layout>
+    <mdui-top-app-bar style="position: flex !important;">
+        <mdui-top-app-bar-title>OpenFrp 配置文件转换 (ini) 工具</mdui-top-app-bar-title>
+    </mdui-top-app-bar>
+    <mdui-layout-item placement="left" class="example-layout-item" style="width: 100px">
+    </mdui-layout-item>
+    <mdui-layout-item placement="right" class="example-layout-item" style="width: 100px">
+    </mdui-layout-item>
+    <mdui-layout-main>
+        <div class="mdui-prose">
+            <h3>使用须知</h3>
+            <p style="color: #ff5e5e">转换得到的配置文件仅供参考，未作任何格式校验，不保证转换的配置文件 100% 可用，请尽快更新至最新版的 Frpc，使用旧版配置文件遇到的问题不会受理。</p>
+        </div>
+        <mdui-tabs value="tab-1">
+            <mdui-tab value="tab-1">TOML to INI</mdui-tab>
+            <mdui-tab value="tab-2">YAML to INI</mdui-tab>
+            <mdui-tab value="tab-3">JSON to INI</mdui-tab>
+            <mdui-tab-panel slot="panel" value="tab-1">
+                <div style="margin-top:8px;">
+                    <mdui-text-field clearable label="TOML （新版 0.50+）" id="toml" rows="10" cols="50">
+                        <span slot="helper">在此处输入新版配置文件</span>
+                    </mdui-text-field>
+                    <mdui-button class="btn" onclick="tomlconvert()" full-width style="margin-top:8px;margin-bottom:8px">转换</mdui-button>
+                    <mdui-text-field label="ini （旧版）" id="ini" rows="10" cols="50">
+                        <span slot="helper" style="color: red">不保证转换的配置文件 100% 可用，请尽快更新至最新版的 Frpc。</span>
+                    </mdui-text-field>
+                </div>
+            </mdui-tab-panel>
+            <mdui-tab-panel slot="panel" value="tab-2">
+                <div style="margin-top:8px;">
+                    <mdui-text-field clearable label="YAML （新版 0.50+）" id="yaml" rows="10" cols="50">
+                        <span slot="helper">在此处输入新版配置文件</span>
+                    </mdui-text-field>
+                    <mdui-button class="btn" onclick="tomlconvert()" full-width style="margin-top:8px;margin-bottom:8px">转换</mdui-button>
+                    <mdui-text-field label="ini （旧版）" id="ini2" rows="10" cols="50">
+                        <span slot="helper" style="color: red">不保证转换的配置文件 100% 可用，请尽快更新至最新版的 Frpc。</span>
+                    </mdui-text-field>
+                </div>
+            </mdui-tab-panel>
+            <mdui-tab-panel slot="panel" value="tab-3">
+                <div style="margin-top:8px;">
+                    <mdui-text-field clearable label="JSON （新版 0.50+）" id="json" rows="10" cols="50">
+                        <span slot="helper">在此处输入新版配置文件</span>
+                    </mdui-text-field>
+                    <mdui-button class="btn" onclick="tomlconvert()" full-width style="margin-top:8px;margin-bottom:8px">转换</mdui-button>
+                    <mdui-text-field label="ini （旧版）" id="ini3" rows="10" cols="50">
+                        <span slot="helper" style="color: red">不保证转换的配置文件 100% 可用，请尽快更新至最新版的 Frpc。</span>
+                    </mdui-text-field>
+                </div>
+            </mdui-tab-panel>
+        </mdui-tabs>
+    </mdui-layout-main>
+</mdui-layout>
+</body>
+
+</html>
