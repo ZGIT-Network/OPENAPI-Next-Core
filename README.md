@@ -41,6 +41,7 @@ Develop Node Version: v20.12.2
 port=3001
 server_name=本地主机
 debug=false
+copyright=ZGIT Network
 
 [mysql]
 host=localhost
