@@ -75,6 +75,8 @@ whitelist   = 127.0.0.1   ; 逗号分隔白名单
 - 演示插件(example.js)：示例插件，默认直接输出 Hello World
 - Frpc 的 Toml 转 INI 插件(toml-to-ini.js)：将 TOML 格式的配置文件转换为 INI 格式，不过 js 文件只是用来声明引入了此插件。
 >此插件以静态页面 ``/public/toml-to-ini`` 实现功能（目前仅支持toml转ini）。
+- WHOIS查询服务(whois-query.js)：查询域名、IP地址或ASN的WHOIS注册信息
+>使用方法: /whois-query?domain={域名} 或 /whois-query?ip={IP地址} 或 /whois-query?asn={ASN编号}，支持批量查询 /whois-query/batch
 
 有关数据库操作的插件目前暂未公开，可联系本仓库管理员也许能提供演示插件。
 可参考下方设计模块方法来调用数据库。
