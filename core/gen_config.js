@@ -9,14 +9,29 @@ const defaultConfig = {
     app: {
         port: 3001,
         server_name: "",
-        debug: false,
-        copyright: 'ZGIT Network'
+        debug: false
     },
     mysql: {
         host: 'localhost',
         user: 'root',
         password: 'password',
         database: 'mydb'
+    },
+    security: {
+        enable: true,
+        maxRequests: 100,
+        timeWindow: 60,
+        banTime: 600,
+        invalidMaxRequests: 20,
+        invalidBanTime: 900,
+        maxBanCount: 5,
+        whitelist: "127.0.0.1",
+        invalidCodes: "404,403,413",
+        uaBlacklist: "curl,bot,spider",
+        refererWhitelist: "",
+        maxPostSizeKB: 1024,
+        ipBlacklist: "",
+        warnBeforeDrop: 30
     }
 };
 

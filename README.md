@@ -17,6 +17,7 @@ ZGIT OPENAPI Next 的服务核心开源版
 2. 模块化 API 组件，支持热更新，无需重启服务。
 3. 高自定义化，基础服务代码完全开源。
 4. 高开发自由度，理论上开发的插件能够实现大多数功能。
+5. 自带限流、安全组件。
 
 ***
 ```
@@ -48,6 +49,12 @@ host=localhost
 user=username
 password=pass
 database=database
+
+enable      = true        ; 是否启用
+maxRequests = 100         ; 窗口内最大请求数
+timeWindow  = 60          ; 统计窗口 (秒)
+banTime     = 600         ; 封禁时长 (秒)
+whitelist   = 127.0.0.1   ; 逗号分隔白名单
 ```
 ***
 ### 静态文件

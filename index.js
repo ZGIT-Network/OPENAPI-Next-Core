@@ -6,6 +6,8 @@ const app = express();
 const ini = require('ini');
 const chokidar = require('chokidar');
 const pluginManager = require('./core/pluginManager');
+const securityMiddleware = require('./core/securityMiddleware');
+
 
 const configPath = './config.ini';
 
@@ -32,7 +34,8 @@ const responseTimeLogger = (req, res, next) => {
     res.on('finish', () => {
         const endTime = Date.now(); // 记录请求结束时间
         const elapsedTime = endTime - startTime; // 计算响应时间
-        console.log(`~ [中间件] 请求响应时间: ${elapsedTime}ms`); // 输出响应时间到console
+        const size = res.getHeader('Content-Length') || 0; // 获取响应大小
+        console.log(`~ [中间件] 请求响应时间: ${elapsedTime}ms | 响应大小: ${size} bytes`); // 输出响应时间和大小到 console
     });
 
     next();
@@ -42,6 +45,14 @@ const responseTimeLogger = (req, res, next) => {
 app.use(responseTimeLogger);
 // 输出请求日志
 app.use(morgan(format));
+// 安全防护（可在 config.ini [security] 段配置策略）
+if (!_config.security || _config.security.enable !== false) {
+    app.use(securityMiddleware(_config.security || {}));
+} else {
+    setTimeout(() => {
+        console.log(`~ [Security] 警告: 基础安全组件已禁用, 请注意确保服务安全性.`);
+    }, 1580);
+}
 // 载入静态资源
 app.use(express.static('public'));
 
