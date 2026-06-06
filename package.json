@@ -1,30 +1,38 @@
 {
   "dependencies": {
+    "adm-zip": "^0.5.16",
+    "axios": "^1.13.2",
     "chokidar": "^4.0.1",
     "express": "^4.19.2",
     "express.js": "^1.0.0",
+    "get-port": "^7.1.0",
+    "http-proxy-middleware": "^3.0.5",
     "ini": "^4.1.2",
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
     "mysql": "^2.18.1",
+    "next": "^16.1.4",
     "node-cache": "^5.1.2"
   },
-  "name": "openapi-core",
+  "name": "openapi",
   "description": "基于 Node.js 开发的 API 服务核心",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZGIT-Network/OPENAPI-Next-Core.git"
+    "url": "git+https://github.com/ZGIT-Network/OpenAPI.git"
   },
-  "author": "ZGIT",
-  "license": "Apache-2.0",
+  "author": "Yunmoan",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ZGIT-Network/OPENAPI-Next-Core/issues"
+    "url": "https://github.com/ZGIT-Network/OpenAPI/issues"
   },
-  "homepage": "https://github.com/ZGIT-Network/OPENAPI-Next-Core#readme"
+  "homepage": "https://github.com/ZGIT-Network/OpenAPI#readme"
 }

@@ -144,7 +144,32 @@ module.exports = function createSecurityMiddleware(config = {}) {
         }
     }
 
+    function normalizeAdminPanelEntry(raw) {
+        const value = String(raw || '/admin').trim();
+        if (!value || value === '/') return '/admin';
+        let normalized = value.startsWith('/') ? value : `/${value}`;
+        normalized = normalized.replace(/\/+$/, '');
+        return normalized || '/admin';
+    }
+
+    const adminPanelEntry = normalizeAdminPanelEntry(config.adminPanelEntry || config.panelEntry);
+
+    function shouldBypassAdminPanel(req) {
+        const path = (req.originalUrl || req.url || '').split('?')[0];
+        if (path.startsWith('/admin/api')) return true;
+        if (path.startsWith('/_next/')) return true;
+        if (path === '/favicon.ico' || path.startsWith('/favicon.ico')) return true;
+        if (adminPanelEntry === '/admin') {
+            return path === '/admin' || path.startsWith('/admin/');
+        }
+        return path === adminPanelEntry || path.startsWith(`${adminPanelEntry}/`);
+    }
+
     return function securityMiddleware(req, res, next) {
+        // 管理面板有自己的登录和鉴权逻辑；这里跳过，避免 CC/Referer/UA 规则误伤后台资源。
+        if (shouldBypassAdminPanel(req)) {
+            return next();
+        }
         const ip = (req.headers["x-forwarded-for"] || req.connection.remoteAddress || "").split(",")[0].trim();
 
         // 白名单直接放行

@@ -1,0 +1,98 @@
+{
+  "name": "example-next",
+  "title": "Next 示例插件",
+  "type": "tool",
+  "author": "example",
+  "version": "v1.0",
+  "nav": {
+    "group": "示例",
+    "path": "/tools/example-next"
+  },
+  "admin": {
+    "cards": [
+      {
+        "id": "example-summary-overview",
+        "title": "示例统计",
+        "description": "example-next 当前数据概况",
+        "placement": "overview",
+        "endpoint": "/example-next/summary",
+        "order": 10
+      },
+      {
+        "id": "example-summary-detail",
+        "title": "示例统计",
+        "description": "插件详情页数据概况",
+        "placement": "plugin-detail",
+        "endpoint": "/example-next/summary",
+        "order": 10
+      }
+    ],
+    "resources": [
+      {
+        "id": "example_next_items",
+        "title": "示例条目",
+        "table": "example_next_items",
+        "primaryKey": "id",
+        "permissions": [
+          "list",
+          "create",
+          "update",
+          "delete"
+        ],
+        "fields": {
+          "id": {
+            "type": "number",
+            "label": "ID",
+            "readonly": true
+          },
+          "title": {
+            "type": "string",
+            "label": "标题",
+            "required": true
+          },
+          "content": {
+            "type": "text",
+            "label": "内容"
+          },
+          "status": {
+            "type": "number",
+            "label": "状态",
+            "required": true,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "pinned": {
+            "type": "boolean",
+            "label": "置顶",
+            "widget": "switch"
+          },
+          "category": {
+            "type": "string",
+            "label": "分类",
+            "enum": [
+              "general",
+              "news",
+              "docs"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "label": "创建时间",
+            "format": "date-or-iso"
+          }
+        },
+        "overview": {
+          "cards": [
+            {
+              "id": "summary",
+              "title": "示例统计",
+              "endpoint": "/example-next/summary"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

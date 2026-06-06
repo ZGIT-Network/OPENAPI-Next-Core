@@ -1,0 +1,94 @@
+{
+  "auth_verification.php": {
+    "lastAction": "health",
+    "lastActionAt": 1768818137206,
+    "operator": "1adf91ff",
+    "updatedAt": 1768818137206,
+    "lastHealth": {
+      "ok": false,
+      "status": 404,
+      "elapsedMs": 2,
+      "url": "http://127.0.0.1:3001/auth_verification.php/health",
+      "contentType": "text/html; charset=utf-8",
+      "htmlFallback": true,
+      "dataPreview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /auth_verification.php/health</pre>\n</body>\n</html>\n",
+      "hint": "non-2xx",
+      "checkedAt": 1768818137206
+    }
+  },
+  "avatar": {
+    "lastAction": "health",
+    "lastActionAt": 1768818576345,
+    "operator": "b51eeb4e",
+    "updatedAt": 1768818576345,
+    "lastHealth": {
+      "ok": false,
+      "status": 404,
+      "elapsedMs": 8,
+      "url": "http://127.0.0.1:3001/avatar/health",
+      "contentType": "text/html; charset=utf-8",
+      "htmlFallback": true,
+      "dataPreview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /avatar/health</pre>\n</body>\n</html>\n",
+      "hint": "non-2xx",
+      "checkedAt": 1768818576345
+    },
+    "healthUnsupported": true
+  },
+  "example": {
+    "lastAction": "health",
+    "lastActionAt": 1768818292864,
+    "operator": "036f745c",
+    "updatedAt": 1768818292865,
+    "lastHealth": {
+      "ok": false,
+      "status": 404,
+      "elapsedMs": 9,
+      "url": "http://127.0.0.1:3001/example/health",
+      "contentType": "text/html; charset=utf-8",
+      "htmlFallback": true,
+      "dataPreview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /example/health</pre>\n</body>\n</html>\n",
+      "hint": "non-2xx",
+      "checkedAt": 1768818292864
+    }
+  },
+  "finalshell": {
+    "lastAction": "enable-physical",
+    "lastActionAt": 1768817798897,
+    "operator": "405f132d",
+    "updatedAt": 1768817798897
+  },
+  "whois-query": {
+    "lastHealth": {
+      "ok": false,
+      "checkedAt": 1768818900421,
+      "hint": "unsupported",
+      "message": "health not declared"
+    },
+    "healthUnsupported": true,
+    "lastAction": "health",
+    "lastActionAt": 1768818900421,
+    "operator": "75692431",
+    "updatedAt": 1768818900421
+  },
+  "openfrp-thirdparty-clientlist": {
+    "lastAction": "data-update",
+    "lastActionAt": 1768834321006,
+    "operator": "26015c24",
+    "updatedAt": 1768834321007
+  },
+  "zgadsense-record": {
+    "lastAction": "data-delete",
+    "lastActionAt": 1768836879046,
+    "operator": "c8081ed9",
+    "updatedAt": 1768836879046
+  },
+  "example-next": {
+    "installSource": "upload",
+    "installUrl": null,
+    "installedAt": 1768839295120,
+    "operator": "771959ee",
+    "lastAction": "install",
+    "lastActionAt": 1768839295120,
+    "updatedAt": 1768839295121
+  }
+}

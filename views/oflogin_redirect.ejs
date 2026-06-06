@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应用登录信息</title>
+    <script>
+        // 倒计时跳转逻辑
+        let countdown = 3;
+        function startCountdown() {
+            const timer = document.getElementById('timer');
+            const interval = setInterval(() => {
+                countdown--;
+                timer.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = '<%- oauthUrl %>';
+                }
+            }, 1000);
+        }
+        window.onload = startCountdown;
+    </script>
+</head>
+<body>
+<h1>即将跳转到授权页面</h1>
+<p>应用名称: <strong><%= appName %></strong></p>
+<p>开发者: <strong><%= developer %></strong></p>
+<p>请求权限: <strong><%= state %></strong></p>
+<p>将在 <span id="timer">3</span> 秒后跳转...</p>
+<p>如果未自动跳转，请点击 <a href="<%- oauthUrl %>">这里</a></p>
+</body>
+</html>

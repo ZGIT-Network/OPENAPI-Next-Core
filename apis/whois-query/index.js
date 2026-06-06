@@ -56,12 +56,12 @@ function getIpAsnWhoisServer(query) {
     if (query.toUpperCase().startsWith('AS')) {
         return IP_ASN_SERVERS['apnic']; // 默认使用APNIC
     }
-    
+
     // 如果是IP地址，根据IP范围选择服务器
     if (isValidIP(query)) {
         const ipParts = query.split('.');
         const firstOctet = parseInt(ipParts[0]);
-        
+
         if (firstOctet >= 1 && firstOctet <= 126) {
             return IP_ASN_SERVERS['arin'];      // A类地址
         } else if (firstOctet >= 128 && firstOctet <= 191) {
@@ -74,7 +74,7 @@ function getIpAsnWhoisServer(query) {
             return IP_ASN_SERVERS['arin'];      // E类地址
         }
     }
-    
+
     return IP_ASN_SERVERS['apnic']; // 默认
 }
 
@@ -83,27 +83,27 @@ function queryWhois(domain, server) {
     return new Promise((resolve, reject) => {
         const client = new net.Socket();
         let data = '';
-        
+
         client.setTimeout(10000); // 10秒超时
-        
+
         client.connect(43, server, () => {
             client.write(domain + '\r\n');
         });
-        
+
         client.on('data', (chunk) => {
             data += chunk.toString();
         });
-        
+
         client.on('end', () => {
             client.destroy();
             resolve(data);
         });
-        
+
         client.on('error', (err) => {
             client.destroy();
             reject(err);
         });
-        
+
         client.on('timeout', () => {
             client.destroy();
             reject(new Error('查询超时'));
@@ -127,17 +127,17 @@ function parseWhoisData(rawData, domain) {
         roid: '',
         raw_data: rawData
     };
-    
+
     for (let line of lines) {
         line = line.trim();
         if (!line || line.startsWith('%') || line.startsWith('#')) continue;
-        
+
         const colonIndex = line.indexOf(':');
         if (colonIndex === -1) continue;
-        
+
         const key = line.substring(0, colonIndex).trim().toLowerCase();
         const value = line.substring(colonIndex + 1).trim();
-        
+
         switch (key) {
             case 'registrant':
             case 'registrant name':
@@ -183,11 +183,11 @@ function parseWhoisData(rawData, domain) {
                 break;
         }
     }
-    
+
     // 增强解析，处理更多字段
     const additionalInfo = extractAdditionalInfo(rawData);
     Object.assign(result, additionalInfo);
-    
+
     return result;
 }
 
@@ -195,17 +195,17 @@ function parseWhoisData(rawData, domain) {
 function extractAdditionalInfo(rawData) {
     const info = {};
     const lines = rawData.split('\n');
-    
+
     for (let line of lines) {
         line = line.trim();
         if (!line || line.startsWith('%') || line.startsWith('#')) continue;
-        
+
         const colonIndex = line.indexOf(':');
         if (colonIndex === -1) continue;
-        
+
         const key = line.substring(0, colonIndex).trim().toLowerCase();
         const value = line.substring(colonIndex + 1).trim();
-        
+
         // 处理更多字段
         if (key.includes('phone') || key.includes('tel')) {
             info.phone = value;
@@ -223,7 +223,7 @@ function extractAdditionalInfo(rawData) {
             info.billing_email = value;
         }
     }
-    
+
     return info;
 }
 
@@ -244,17 +244,17 @@ function parseIpAsnWhoisData(rawData, query) {
         status: '',
         raw_data: rawData
     };
-    
+
     for (let line of lines) {
         line = line.trim();
         if (!line || line.startsWith('%') || line.startsWith('#')) continue;
-        
+
         const colonIndex = line.indexOf(':');
         if (colonIndex === -1) continue;
-        
+
         const key = line.substring(0, colonIndex).trim().toLowerCase();
         const value = line.substring(colonIndex + 1).trim();
-        
+
         switch (key) {
             case 'organization':
             case 'org':
@@ -294,7 +294,7 @@ function parseIpAsnWhoisData(rawData, query) {
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -321,11 +321,11 @@ function isValidASN(asn) {
 router.get('/', async (req, res) => {
     try {
         const { domain, ip, asn } = req.query;
-        
+
         // 确定查询类型和内容
         let queryType = '';
         let queryContent = '';
-        
+
         if (domain) {
             queryType = 'domain';
             queryContent = domain;
@@ -348,7 +348,7 @@ router.get('/', async (req, res) => {
                 timestamp: new Date().toISOString()
             });
         }
-        
+
         // 验证查询内容格式
         let isValid = false;
         if (queryType === 'domain') {
@@ -358,7 +358,7 @@ router.get('/', async (req, res) => {
         } else if (queryType === 'asn') {
             isValid = isValidASN(queryContent);
         }
-        
+
         if (!isValid) {
             return res.status(400).json({
                 success: false,
@@ -366,7 +366,7 @@ router.get('/', async (req, res) => {
                 timestamp: new Date().toISOString()
             });
         }
-        
+
         // 检查缓存
         const cacheKey = `whois_${queryType}_${queryContent}`;
         const cachedResult = cache.get(cacheKey);
@@ -384,7 +384,7 @@ router.get('/', async (req, res) => {
                 timestamp: new Date().toISOString()
             });
         }
-        
+
         // 获取WHOIS服务器
         let whoisServer;
         if (queryType === 'domain') {
@@ -392,15 +392,15 @@ router.get('/', async (req, res) => {
         } else {
             whoisServer = getIpAsnWhoisServer(queryContent);
         }
-        
+
         console.log(`~ [${plugin_info.name}] 查询${queryType}: ${queryContent}, WHOIS服务器: ${whoisServer}`);
-        
+
         const rawData = await queryWhois(queryContent, whoisServer);
-        
+
         let result;
         if (queryType === 'domain') {
             const parsedData = parseWhoisData(rawData, queryContent);
-            
+
             // 计算续费年限
             let renewalYears = 0;
             if (parsedData.registration_date && parsedData.expiration_date) {
@@ -414,7 +414,7 @@ router.get('/', async (req, res) => {
                     // 日期解析失败，忽略
                 }
             }
-            
+
             result = {
                 ...parsedData,
                 renewal_years: renewalYears,
@@ -429,11 +429,11 @@ router.get('/', async (req, res) => {
                 query_time: new Date().toISOString()
             };
         }
-        
+
         // 存入缓存
         cache.set(cacheKey, result);
         console.log(`~ [${plugin_info.name}] 已缓存结果: ${queryContent}`);
-        
+
         res.json({
             success: true,
             data: result,
@@ -445,7 +445,7 @@ router.get('/', async (req, res) => {
             },
             timestamp: new Date().toISOString()
         });
-        
+
         console.log("~ [" + plugin_info.name + "] 已处理请求: " + queryContent);
     } catch (error) {
         console.error("~ [" + plugin_info.name + "] 错误: " + error.message);
@@ -461,7 +461,7 @@ router.get('/', async (req, res) => {
 router.post('/batch', async (req, res) => {
     try {
         const { domains = [], ips = [], asns = [] } = req.body;
-        
+
         if (domains.length === 0 && ips.length === 0 && asns.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -469,7 +469,7 @@ router.post('/batch', async (req, res) => {
                 timestamp: new Date().toISOString()
             });
         }
-        
+
         const totalQueries = domains.length + ips.length + asns.length;
         if (totalQueries > 20) {
             return res.status(400).json({
@@ -478,10 +478,10 @@ router.post('/batch', async (req, res) => {
                 timestamp: new Date().toISOString()
             });
         }
-        
+
         const results = [];
         const errors = [];
-        
+
         // 批量查询域名
         for (const domain of domains) {
             if (isValidDomain(domain)) {
@@ -489,7 +489,7 @@ router.post('/batch', async (req, res) => {
                     const whoisServer = getWhoisServer(domain);
                     const rawData = await queryWhois(domain, whoisServer);
                     const parsedData = parseWhoisData(rawData, domain);
-                    
+
                     // 计算续费年限
                     let renewalYears = 0;
                     if (parsedData.registration_date && parsedData.expiration_date) {
@@ -503,7 +503,7 @@ router.post('/batch', async (req, res) => {
                             // 日期解析失败，忽略
                         }
                     }
-                    
+
                     results.push({
                         ...parsedData,
                         renewal_years: renewalYears,
@@ -526,7 +526,7 @@ router.post('/batch', async (req, res) => {
                 });
             }
         }
-        
+
         // 批量查询IP地址
         for (const ip of ips) {
             if (isValidIP(ip)) {
@@ -534,7 +534,7 @@ router.post('/batch', async (req, res) => {
                     const whoisServer = getIpAsnWhoisServer(ip);
                     const rawData = await queryWhois(ip, whoisServer);
                     const parsedData = parseIpAsnWhoisData(rawData, ip);
-                    
+
                     results.push({
                         ...parsedData,
                         whois_server: whoisServer,
@@ -556,7 +556,7 @@ router.post('/batch', async (req, res) => {
                 });
             }
         }
-        
+
         // 批量查询ASN
         for (const asn of asns) {
             if (isValidASN(asn)) {
@@ -564,7 +564,7 @@ router.post('/batch', async (req, res) => {
                     const whoisServer = getIpAsnWhoisServer(asn);
                     const rawData = await queryWhois(asn, whoisServer);
                     const parsedData = parseIpAsnWhoisData(rawData, asn);
-                    
+
                     results.push({
                         ...parsedData,
                         whois_server: whoisServer,
@@ -586,7 +586,7 @@ router.post('/batch', async (req, res) => {
                 });
             }
         }
-        
+
         res.json({
             success: true,
             data: {
@@ -603,7 +603,7 @@ router.post('/batch', async (req, res) => {
             },
             timestamp: new Date().toISOString()
         });
-        
+
         console.log("~ [" + plugin_info.name + "] 已处理批量请求: " + totalQueries + " 个查询项");
     } catch (error) {
         console.error("~ [" + plugin_info.name + "] 批量查询错误: " + error.message);

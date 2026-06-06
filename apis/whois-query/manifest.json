@@ -1,0 +1,23 @@
+{
+  "name": "whois-query",
+  "title": "WHOIS 查询",
+  "type": "tool",
+  "author": "Yunmoan",
+  "version": "v2.0_Next",
+  "nav": {
+    "group": "实用工具",
+    "path": "/tools/whois-query"
+  },
+  "ui": {
+    "description": "查询域名 / IP / ASN 的 WHOIS 信息。",
+    "fields": [
+      { "name": "domain", "label": "域名", "type": "text", "placeholder": "example.com" },
+      { "name": "ip", "label": "IP 地址", "type": "text", "placeholder": "8.8.8.8" },
+      { "name": "asn", "label": "ASN", "type": "text", "placeholder": "AS15169" }
+    ],
+    "api": {
+      "method": "GET",
+      "path": "/whois-query"
+    }
+  }
+}
